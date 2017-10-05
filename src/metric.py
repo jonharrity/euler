@@ -1,6 +1,7 @@
 
 
 import time
+import traceback
 
 
 class Metric():
@@ -18,10 +19,12 @@ class Metric():
                     alg_start = time.time() * 1000
                     alg()
                     alg_end = time.time() * 1000
-                    alg_duration = alg_end - alg_start
-                    
                 except Exception as e:
-                    print('>Exception %s raised' % e)
+                    alg_end = time.time() * 1000
+                    print(traceback.format_exc())
+                    print('>Exception [%s] raised' % e)
+                finally:
+                    alg_duration = alg_end - alg_start
                 
                 if reps <= 1:
                     print('>total time (miliseconds): %s \n' % alg_duration)
@@ -32,13 +35,3 @@ class Metric():
                 print('-Stats for %s repetitions in miliseconds-' % reps)
                 print('Mean execution time: %s' % (sum(timecard) / reps))
                 print('Median execution time: %s\n' % (sorted(timecard)[int(reps/2)]))
-
-                
-def foo():
-    sum(range(100000))
-
-def bar():
-    sorted(reversed([i for i in range(100000)]))
-
-if __name__ == '__main__':
-    Metric((foo, bar), 100)

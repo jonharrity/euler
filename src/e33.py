@@ -1,42 +1,81 @@
 
-                    
-                    
-                    
-def str_without(string, char):
-    result = ""
-    once = False
-    for s in string:
-        if not char in s:
-            if not once:
-                result += s
-                once = True
-            
-    return result
+import math
 
 
 
 
+def gcd(a, b):
+    if b == 0:
+        return a
+    else:
+        return gcd(b, a % b)
+    
+    
+def strip(s, char):
+    loc = s.find(char)
+    s = s[0:loc] + s[loc+1:]
+    return s
 
-for i in range(1, 100):
-    for j in range(1, 100):
-        if (i/j <= 0) or (i/j >= 1):
-            None
-        else:
-            s_num = (s for s in str(i))
-            s_den = (s for s in str(j))
+def get_reduced(num, den):
+    if num < 10:
+        return
+    
+    snum = str(num)
+    sden = str(den)
+    inter = set(snum).intersection(set(sden))
+    if len(inter) < 1:
+        return None
+    else:
+        val = inter.pop()
+        num = int(strip(snum, val))
+        den = int(strip(sden, val))
+        if val == '0' or num == 0 or den == 0 or num >= den:
+            return None
+        return (num, den)
 
-            
-            for s in s_num:
-                if s in s_den:
-                    num = str_without(s_num, s)
-                    den = str_without(s_den, s)
+def fractions_equal(f1, f2):
+    return abs(f1[0]/f1[1] - f2[0]/f2[1]) < .001
 
-                    if num == '' or den == '':
-                        None
-#                     elif num == '0' or den == '0':
-#                         None
-                    elif not ((int(num)/int(den)) == i/j):
-                        None
-                    else:   
-                        print("%s/%s : %s/%s" % (i, j, num, den))
-                    print("%s/%s : %s/%s" % (i, j, num, den))
+def simplified(num, den):
+    g = gcd(num, den)
+    return (round(num/g), round(den/g))
+
+
+
+
+def alg2():
+    
+    
+    limit = 100
+    
+    solnum = 1
+    solden = 1
+    
+    for den in range(2, limit):
+        for num in range(1, den):
+            reduced = get_reduced(num, den)
+#             if reduced:
+#                 print('%s/%s reduced is %s/%s' % (num,den,reduced[0],reduced[1]))
+            if reduced and fractions_equal((num, den), reduced):
+                result = simplified(num, den)
+                solnum *= result[0]
+                solden *= result[1]
+#                 print('%s/%s -> %s/%s' % (num,den,result[0],result[1]))
+#                 print(reduced)
+    result = simplified(solnum, solden)
+#     print('%s/%s -> %s/%s' % (solnum, solden, result[0], result[1]))
+    print(result[1])
+
+
+
+if __name__ == '__main__':
+    import metric
+    metric.Metric(alg2)
+    
+    
+    
+    
+    
+    
+    
+    

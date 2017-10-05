@@ -1,5 +1,105 @@
 
 
+import math
+
+
+
+def cycle_prime_count(max_prime):
+    
+    is_prime = [True] * (max_prime+1)
+    is_prime[:2] = [False]
+    
+    n = 2
+    while n < max_prime/2:
+        for i in range(n+n, max_prime, n):
+            is_prime[i] = False
+        n += 1
+        while n < max_prime and not is_prime[n]:
+            n += 1
+    
+    
+    nw = 3
+    ne = 5
+    se = 7
+    sw = 9
+    dnw = 10
+    dne = 12
+    dse = 14
+    dsw = 16
+    
+    while sw < max_prime:
+        count = 0
+        if is_prime[nw]:
+            count += 1
+        if is_prime[ne]:
+            count += 1
+        if is_prime[se]:
+            count += 1
+        if is_prime[sw]:
+            count += 1
+        yield count
+        
+        nw += dnw
+        ne += dne
+        se += dse
+        sw += dsw
+        dnw += 8
+        dne += 8
+        dse += 8
+        dsw += 8
+
+
+
+def alg1():
+    goal_percent = .1
+    goal_inc = goal_percent * 4
+
+    ratio_top = 0
+    ratio_top_goal = goal_percent
+    
+    side_length = 1
+    gen = cycle_prime_count(10 ** 8)
+    
+    side_length += 2
+    ratio_top += next(gen)
+    ratio_top_goal += goal_inc
+    
+    while ratio_top >= ratio_top_goal:
+        ans = next(gen, None)
+        if ans == None:
+            print('incomplete, ratio %s' % (ratio_top / ((side_length-1)*2+1)))
+            break
+        side_length += 2
+        ratio_top += ans
+        ratio_top_goal += goal_inc
+        
+    print(side_length)
+        
+
+
+# [1] executing <function alg1 at 0x7f01f738a378>:
+# 26241
+# >total time (miliseconds): 643095.5703125 
+
+
+
+if __name__ == '__main__':
+    import metric
+    metric.Metric([alg1])
+
+
+
+
+
+import sys
+sys.exit(0)
+
+
+
+
+
+
+
 
 def e58(length):
     max_primes = length ** 2 + 1
